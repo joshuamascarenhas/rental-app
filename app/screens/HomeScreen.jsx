@@ -1,45 +1,32 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
-import PropertyCard from '../components/PropertyCard';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ListingsScreen from './ListingsScreen';
+import FavoritesScreen from './FavoritesScreen';
+import ProfileScreen from './ProfileScreen';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const sampleProperties = [
-  {
-    id: '1',
-    title: 'Spacious 2BHK Apartment',
-    rent: 1200,
-    location: 'Downtown',
-    safetyScore: 85,
-    verified: true,
-  },
-  {
-    id: '2',
-    title: 'Cozy Studio Apartment',
-    rent: 800,
-    location: 'Suburbs',
-    safetyScore: 72,
-    verified: false,
-  },
-];
+const Tab = createBottomTabNavigator();
 
-export default function HomeScreen({ navigation }) {
-  const renderProperty = ({ item }) => (
-    <PropertyCard property={item} onPress={() => navigation.navigate('PropertyDetails', { property: item })} />
-  );
-
+export default function HomeTabs() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Verified Rentals Near You</Text>
-      <FlatList
-        data={sampleProperties}
-        keyExtractor={(item) => item.id}
-        renderItem={renderProperty}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      />
-    </View>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: '#FF4081',
+        tabBarInactiveTintColor: 'gray',
+        tabBarIcon: ({ color, size }) => {
+          let iconName = '';
+          if (route.name === 'Listings') iconName = 'list';
+          if (route.name === 'Favorites') iconName = 'favorite';
+          if (route.name === 'Profile') iconName = 'person';
+
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Listings" component={ListingsScreen} />
+      <Tab.Screen name="Favorites" component={FavoritesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#121212' },
-  heading: { fontSize: 22, fontWeight: 'bold', color: 'white', marginBottom: 16 },
-});
